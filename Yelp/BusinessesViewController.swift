@@ -19,6 +19,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         tableView.delegate = self
         tableView.dataSource = self
+        // Let the rowheight be decided by Auto-Layout
+        tableView.rowHeight = UITableViewAutomaticDimension
+        // Ballpark the number so that, scrollview can easily estimate the height and then lazily calculate the actual height
+        tableView.estimatedRowHeight = 120 
         
         Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
             
