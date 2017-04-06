@@ -17,6 +17,10 @@ let yelpConsumerSecret = "33QCvh5bIF5jIHR5klQr7RtBDhQ"
 let yelpToken = "uRcRswHFYa1VkDrGV6LAW2F8clGh5JHV"
 let yelpTokenSecret = "mqtKIxMIR4iBtBPZCmCLEb-Dz3Y"
 
+// APP ID: yqJO9sWAaPFmq23U1mSlFg
+// APP Secret: e57HYZV1RxI9JwjaCZ7t60UEJk8qQu3TzxzHKJiSzHJPWv3pnF1fuijWitvJ6sTs
+
+
 enum YelpSortMode: Int {
     case bestMatched = 0, distance, highestRated
 }
