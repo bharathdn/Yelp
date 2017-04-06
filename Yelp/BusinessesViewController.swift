@@ -11,6 +11,9 @@ import UIKit
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate {
     
     var businesses: [Business]!
+    var filteredBusinesses: [Business]!
+    var searchBar: UISearchBar!
+    var searchController: UISearchController!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -24,31 +27,15 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         // Ballpark the number so that, scrollview can easily estimate the height and then lazily calculate the actual height
         tableView.estimatedRowHeight = 120 
         
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses
-            self.tableView.reloadData()
-            if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
-            }
-            
-            }
-        )
+        searchUpdateResults(searchTerm: nil)
         
-        /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
+        // Initialize the UISearchBar
+        searchBar = UISearchBar()
+        searchBar.delegate = self
         
+        // Add SearchBar to the NavigationBar
+        searchBar.sizeToFit()
+        navigationItem.titleView = searchBar
     }
     
     override func didReceiveMemoryWarning() {
@@ -70,7 +57,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         cell.business = businesses[indexPath.row]
         return cell
-        
     }
     
  
@@ -95,4 +81,55 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    func searchUpdateResults(searchTerm: String?) {
+        Business.searchWithTerm(term: searchTerm ?? "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
+            
+            self.businesses = businesses
+            self.tableView.reloadData()
+            
+            // dev console
+            if let businesses = businesses {
+                for business in businesses {
+                    print(business.name!)
+                    print(business.address!)
+                }
+            }
+        })
+        
+        /* Example of Yelp search with more search options specified
+         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
+         self.businesses = businesses
+         
+         for business in businesses {
+         print(business.name!)
+         print(business.address!)
+         }
+         }
+         */
+    }
+    
+}
+
+extension BusinessesViewController: UISearchBarDelegate {
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(true, animated: true)
+        return true
+    }
+    
+    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(false, animated: true)
+        return true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let searchTerm = searchBar.text
+        searchBar.resignFirstResponder()
+        searchUpdateResults(searchTerm: searchTerm!)
+    }
 }
