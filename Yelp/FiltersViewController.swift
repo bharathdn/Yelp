@@ -19,6 +19,12 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     var filtersEx: [(String, [[String: Any]])] = []
     let CellIdentifier = "TableViewCell", HeaderViewIdentifier = "TableViewHeaderView"
     
+    
+    var isDistanceExpanded = false
+    var filteredDistanceIndex = 0
+    var isSortByExpanded = false
+    var filteredSortIndex = 0
+    
     @IBOutlet weak var tableView: UITableView!
     weak var delegate: FiltersViewControllerDelegate?
     
@@ -29,6 +35,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         categories = YelpFilter.yelpCategories()
         
         filtersEx = [
+            ("Deals Offered", [["name": "Deals", "code" : "deals"]]),
             ("Distance", YelpFilter.yelpDistances()),
             ("Sort By", YelpFilter.yelpSortValues()),
             ("category", YelpFilter.yelpCategories())
@@ -75,19 +82,95 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         return (filtersEx as AnyObject).count
     }
     
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filtersEx[section].1.count
+        switch section {
+        case 0, 3 :
+            return filtersEx[section].1.count
+            
+        case 1:
+            if isDistanceExpanded {
+                print("returning 3 for Distance section")
+                return filtersEx[section].1.count
+            }
+            else {
+                print("returning 1 for Distance section")
+                return 1
+            }
+            
+        case 2:
+            if isSortByExpanded {
+                print("returning 3 for SortBy section")
+                return filtersEx[section].1.count
+            }
+            else {
+                print("returning 1 for SortBy section")
+                return 1
+            }
+            
+        default:
+            print("\n*** Error fetching numberOfRowsInSection ***\n")
+            return filtersEx[section].1.count
+        }
     }
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier, for: indexPath) as UITableViewCell
+        let section = indexPath.section
         
-        let filter = filtersEx[indexPath.section].1
-        print(filter[indexPath.row]["name"]!)
-        cell.textLabel?.text = filter[indexPath.row]["name"]! as? String
+        switch section {
+        case 0, 3:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+            
+            let filter = filtersEx[section].1
+            print(filter[indexPath.row]["name"]!)
+            cell.switchLabel?.text = filter[indexPath.row]["name"]! as? String
+            cell.onSwitch.isOn = false
+            return cell
+            
+        case 1:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
+            let filter = filtersEx[section].1
+            var labelText = ""
+            
+            if(!isDistanceExpanded) {
+                print("\n\nfiltered Distance Index::: ")
+                print(filter[filteredSortIndex]["name"]!)
+                labelText = filter[filteredDistanceIndex]["name"]! as! String
+            }
+            else {
+                labelText = filter[indexPath.row]["name"]! as! String
+            }
+            
+            cell.dropDownLabel?.text = labelText
+            return cell
+            
+            
+        case 2:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
+            let filter = filtersEx[section].1
+            var labelText = ""
+            
+            if(!isSortByExpanded) {
+                print("\n\nfiltered sort Index::: ")
+                print(filter[filteredSortIndex]["name"]!)
+                labelText = filter[filteredSortIndex]["name"]! as! String
+            }
+            else {
+                labelText = filter[indexPath.row]["name"]! as! String
+            }
+            
+            cell.dropDownLabel?.text = labelText
+            return cell
         
-        return cell
+        
+        default:
+            print("\n*** Error dequeing ***\n")
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+            return cell
+        }
     }
+    
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderViewIdentifier)!
@@ -95,8 +178,39 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         return header
     }
     
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30
+        return 25
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("row \(indexPath.row) was selected in section \(indexPath.section)")
+        
+        switch indexPath.section {
+        case 1:
+            if isDistanceExpanded {
+                isDistanceExpanded = false
+                filteredDistanceIndex = indexPath.row
+            }
+            else {
+                isDistanceExpanded = true
+            }
+            tableView.reloadSections(IndexSet([indexPath.section]), with: .fade)
+            
+        case 2:
+            if isSortByExpanded {
+                isSortByExpanded = false
+                filteredSortIndex = indexPath.row
+            }
+            else {
+                isSortByExpanded = true
+            }
+            tableView.reloadSections(IndexSet([indexPath.section]), with: .automatic)
+            
+        default:
+            print("Non Checkbox cell selected")
+            return
+        }
     }
 
 

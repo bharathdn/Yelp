@@ -189,39 +189,59 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="65.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0O-qe-Is4">
-                                                    <rect key="frame" x="8" y="22" width="42" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2qa-37-AgD">
+                                                    <rect key="frame" x="266" y="17" width="51" height="31"/>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0O-qe-Is4">
+                                                    <rect key="frame" x="13" y="22" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2qa-37-AgD">
-                                                    <rect key="frame" x="263" y="17" width="51" height="31"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </switch>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="2qa-37-AgD" secondAttribute="bottom" constant="9" id="Awg-uf-MPQ"/>
+                                                <constraint firstItem="2qa-37-AgD" firstAttribute="trailing" secondItem="Vs6-WS-NBy" secondAttribute="trailingMargin" constant="3" id="Cgm-7Q-6lK"/>
+                                                <constraint firstItem="r0O-qe-Is4" firstAttribute="leading" secondItem="Vs6-WS-NBy" secondAttribute="leadingMargin" constant="5" id="KNr-kw-oj4"/>
+                                                <constraint firstItem="r0O-qe-Is4" firstAttribute="top" secondItem="Vs6-WS-NBy" secondAttribute="topMargin" constant="14" id="Mgt-20-qns"/>
+                                                <constraint firstItem="2qa-37-AgD" firstAttribute="top" secondItem="Vs6-WS-NBy" secondAttribute="topMargin" constant="9" id="dcr-Qe-5M9"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="r0O-qe-Is4" secondAttribute="bottom" constant="14" id="yqS-Yz-qRX"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="onSwitch" destination="2qa-37-AgD" id="yFb-c2-eJ7"/>
+                                            <outlet property="switchLabel" destination="r0O-qe-Is4" id="0Yb-rH-LKs"/>
+                                        </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Pft-pn-PXT" customClass="DropDownCell" customModule="Yelp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DropDownCell" id="Pft-pn-PXT" customClass="DropDownCell" customModule="Yelp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="94" width="320" height="66"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Pft-pn-PXT" id="d0B-2N-IFn">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="65.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xcU-vB-24H">
-                                                    <rect key="frame" x="8" y="22" width="42" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" image="down" translatesAutoresizingMaskIntoConstraints="NO" id="W4x-Kz-QE5">
+                                                    <rect key="frame" x="277" y="17" width="32" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="32" id="Bao-sg-9dp"/>
+                                                        <constraint firstAttribute="height" constant="32" id="BuS-TI-vcf"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xcU-vB-24H">
+                                                    <rect key="frame" x="13" y="22" width="42" height="22"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="down" translatesAutoresizingMaskIntoConstraints="NO" id="W4x-Kz-QE5">
-                                                    <rect key="frame" x="277" y="15" width="32" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="W4x-Kz-QE5" secondAttribute="bottom" constant="9" id="4b4-Sr-9QS"/>
+                                                <constraint firstItem="xcU-vB-24H" firstAttribute="leading" secondItem="d0B-2N-IFn" secondAttribute="leadingMargin" constant="5" id="DTf-Ul-Dyo"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="W4x-Kz-QE5" secondAttribute="trailing" constant="3" id="E0s-p2-e6f"/>
+                                                <constraint firstItem="W4x-Kz-QE5" firstAttribute="top" secondItem="d0B-2N-IFn" secondAttribute="topMargin" constant="9" id="KgK-63-kxf"/>
+                                                <constraint firstItem="xcU-vB-24H" firstAttribute="top" secondItem="d0B-2N-IFn" secondAttribute="topMargin" constant="14" id="Nzu-ZC-xjV"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="xcU-vB-24H" secondAttribute="bottom" constant="14" id="zh6-I7-n0l"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="dropDownLabel" destination="xcU-vB-24H" id="f72-EN-iYQ"/>

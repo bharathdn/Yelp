@@ -13,16 +13,15 @@ import UIKit
 }
 
 class SwitchCell: UITableViewCell {
-
+    
     @IBOutlet weak var onSwitch: UISwitch!
     @IBOutlet weak var switchLabel: UILabel!
-    
     weak var delegate: SwitchCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        onSwitch.addTarget(self, action: #selector(SwitchCell.switchValueChanged), for: UIControlEvents.valueChanged)
+//        onSwitch.addTarget(self, action: #selector(SwitchCell.switchValueChanged), for: UIControlEvents.valueChanged)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
