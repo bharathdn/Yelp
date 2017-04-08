@@ -12,6 +12,7 @@ class DropDownCell: UITableViewCell {
 
     @IBOutlet weak var dropDownLabel: UILabel!
     @IBOutlet weak var dropDownView: UIImageView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -19,8 +20,6 @@ class DropDownCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
-
 }

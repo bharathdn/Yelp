@@ -9,17 +9,23 @@
 import UIKit
 
 @objc protocol FiltersViewControllerDelegate {
-    @objc optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: AnyObject])
+    @objc optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: [AnyObject]])
 }
 
 class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate {
 
     var categories: [[String: String]]!
-    var switchStates = [Int:Bool]()
     var filtersEx: [(String, [[String: Any]])] = []
     let CellIdentifier = "TableViewCell", HeaderViewIdentifier = "TableViewHeaderView"
     
-    
+    // filter values
+    var dealsOffered = false
+    var switchStates = [Int:Bool]()
+    // sortby is Best Match by default
+    var sortBy = 0
+    // distance is 0 by default
+    var distance = 0
+
     var isDistanceExpanded = false
     var filteredDistanceIndex = 0
     var isSortByExpanded = false
@@ -41,6 +47,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             ("category", YelpFilter.yelpCategories())
         ]
         
+        print(filtersEx[2].1[0]["code"] as! Int)
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: CellIdentifier)
@@ -59,22 +67,27 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     @IBAction func onSearchButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
-        var filters = [String: AnyObject]()
+        var searchfilters = [String: [AnyObject]]()
         
+        // Fetch selected categories
         var selectedCategories = [String]()
         for (row, isSelected) in switchStates {
             if isSelected {
                 selectedCategories.append(categories[row]["code"]!)
                 let catg = categories[row]["code"]!
-                print("adding category \(catg)")
+                print("adding selected category \(catg)")
             }
         }
         
         if selectedCategories.count > 0 {
-            filters["categories"] = selectedCategories as AnyObject
+           searchfilters["categories"] = selectedCategories as [AnyObject]
         }
         
-        delegate?.filtersViewController?(filtersViewController: self, didUpdateFilters: filters)
+        searchfilters["dealsOffered"] = ([dealsOffered] as AnyObject) as? [AnyObject]
+        searchfilters["distance"] = ([distance] as AnyObject) as? [AnyObject]
+        searchfilters["sort"] = ([sortBy] as AnyObject) as? [AnyObject]
+        
+        delegate?.filtersViewController?(filtersViewController: self, didUpdateFilters: searchfilters)
     }
     
     
@@ -117,11 +130,12 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let section = indexPath.section
+        let row = indexPath.row
         
         switch section {
         case 0, 3:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-            
+            cell.delegate = self
             let filter = filtersEx[section].1
             print(filter[indexPath.row]["name"]!)
             cell.switchLabel?.text = filter[indexPath.row]["name"]! as? String
@@ -130,6 +144,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
+            //cell.delegate = self
             let filter = filtersEx[section].1
             var labelText = ""
             
@@ -137,8 +152,15 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
                 print("\n\nfiltered Distance Index::: ")
                 print(filter[filteredSortIndex]["name"]!)
                 labelText = filter[filteredDistanceIndex]["name"]! as! String
+                cell.dropDownView.image = #imageLiteral(resourceName: "down")
             }
             else {
+                if(filteredDistanceIndex == row) {
+                    cell.dropDownView.image = #imageLiteral(resourceName: "checked")
+                }
+                else {
+                    cell.dropDownView.image = #imageLiteral(resourceName: "unchecked")
+                }
                 labelText = filter[indexPath.row]["name"]! as! String
             }
             
@@ -148,6 +170,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell", for: indexPath) as! DropDownCell
+            //cell.delegate = self
             let filter = filtersEx[section].1
             var labelText = ""
             
@@ -155,8 +178,16 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
                 print("\n\nfiltered sort Index::: ")
                 print(filter[filteredSortIndex]["name"]!)
                 labelText = filter[filteredSortIndex]["name"]! as! String
+                cell.dropDownView.image = #imageLiteral(resourceName: "down")
             }
             else {
+                if(filteredSortIndex == row) {
+                    cell.dropDownView.image = #imageLiteral(resourceName: "checked")
+                }
+                else {
+                    cell.dropDownView.image = #imageLiteral(resourceName: "unchecked")
+                }
+                
                 labelText = filter[indexPath.row]["name"]! as! String
             }
             
@@ -184,13 +215,14 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("row \(indexPath.row) was selected in section \(indexPath.section)")
+        print("Row Selection => \(indexPath.row) was selected in section \(indexPath.section)")
         
         switch indexPath.section {
         case 1:
             if isDistanceExpanded {
                 isDistanceExpanded = false
                 filteredDistanceIndex = indexPath.row
+                distance = filtersEx[1].1[filteredDistanceIndex]["code"] as! Int
             }
             else {
                 isDistanceExpanded = true
@@ -201,6 +233,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             if isSortByExpanded {
                 isSortByExpanded = false
                 filteredSortIndex = indexPath.row
+                sortBy = filtersEx[2].1[filteredSortIndex]["code"] as! Int
             }
             else {
                 isSortByExpanded = true
@@ -208,26 +241,24 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             tableView.reloadSections(IndexSet([indexPath.section]), with: .automatic)
             
         default:
-            print("Non Checkbox cell selected")
+            print("Row Selection => Non Checkbox cell selected")
             return
         }
     }
-
-
-    /*
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-        cell.switchLabel.text = filtersEx[indexPath.row]["name"]
-        cell.delegate = self
-        cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
-        
-        return cell
-    }
- */
     
+    // Delegates Implementation
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPath(for: switchCell)!
-        switchStates[indexPath.row] = value
-        print("Filter VC received Switch change event: Swicth changed to \(value)")
+        if(indexPath.section == 0) {
+            dealsOffered = value
+            print("Offers switch toggeld to \(value)")
+        }
+        else if(indexPath.section == 3) {
+            switchStates[indexPath.row] = value
+            print("Switch at index \(indexPath.row) for section \(indexPath.section) toggled to \(value)")
+        }
+        else {
+            print("SwitchCell delegate could not detect the right section")
+        }
     }
 }

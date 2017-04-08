@@ -64,19 +64,23 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
      
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        let navigationViewController = segue.destination as! UINavigationController
-//        let filtersViewController = navigationViewController.topViewController as! FiltersViewController
-//        filtersViewController.delegate = self
+        let navigationViewController = segue.destination as! UINavigationController
+        let filtersViewController = navigationViewController.topViewController as! FiltersViewController
+        filtersViewController.delegate = self
     }
     
     
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: [AnyObject]]) {
         
+        let deals = filters["dealsOffered"]?[0] as? Bool
+        let sort = filters["sort"]?[0] as? Int
+        let distance = filters["distance"]?[0] as? Int
         let categories = filters["categories"] as? [String]
-        print("\n searching for these categories \(categories!)")
         
-        Business.searchWithTerm(term: "Restaurants", sort: nil, categories: categories, deals: nil) { (businesses: [Business]!, error: Error!) -> Void in
+        Business.searchWithTerm(term: "Restaurants", sort: YelpSortMode(rawValue: sort!), categories: categories, deals: deals) { (businesses: [Business]!, error: Error!) -> Void in
             self.businesses = businesses
+            print("\n\n Businesses from search")
+            print(businesses)
             self.tableView.reloadData()
         }
     }
