@@ -61,9 +61,17 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
      
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let navigationViewController = segue.destination as! UINavigationController
-        let filtersViewController = navigationViewController.topViewController as! FiltersViewController
-        filtersViewController.delegate = self
+        if(segue.identifier == "filterSegue") {
+            let navigationViewController = segue.destination as! UINavigationController
+            let filtersViewController = navigationViewController.topViewController as! FiltersViewController
+            filtersViewController.delegate = self
+        }
+        /* code for mapsViewController
+        else if(segue.identifier == "mapViewSegue") {
+            let navigationViewController = segue.destination as! UINavigationController
+            let mapViewController = navigationViewController.topViewController as! MapViewController
+        }
+         */
     }
     
     

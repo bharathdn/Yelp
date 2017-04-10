@@ -131,7 +131,12 @@
                     <navigationItem key="navigationItem" title="Yelp" id="Ihr-eS-0NH">
                         <barButtonItem key="leftBarButtonItem" title="Filters" id="Tkc-Ig-Oq3">
                             <connections>
-                                <segue destination="0zI-7V-Lg0" kind="presentation" id="0LR-R2-3SK"/>
+                                <segue destination="0zI-7V-Lg0" kind="presentation" identifier="filterSegue" id="0LR-R2-3SK"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Map" id="rhc-k3-HRN">
+                            <connections>
+                                <segue destination="uKt-AH-W3f" kind="presentation" identifier="mapViewSegue" id="WJu-vP-979"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -278,10 +283,10 @@
             </objects>
             <point key="canvasLocation" x="1646" y="356"/>
         </scene>
-        <!--View Controller-->
+        <!--Map View Controller-->
         <scene sceneID="UjK-Vb-KjF">
             <objects>
-                <viewController id="xSS-l8-u4A" sceneMemberID="viewController">
+                <viewController id="xSS-l8-u4A" customClass="MapViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pkx-i2-tqa"/>
                         <viewControllerLayoutGuide type="bottom" id="me5-KO-EB4"/>
@@ -290,14 +295,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="T1Y-mB-3W6">
-                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T1Y-mB-3W6">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="T1Y-mB-3W6" firstAttribute="leading" secondItem="Ef1-Vq-3Sr" secondAttribute="leading" id="1TA-lM-MNH"/>
+                            <constraint firstAttribute="trailing" secondItem="T1Y-mB-3W6" secondAttribute="trailing" id="56d-ua-JT2"/>
+                            <constraint firstItem="me5-KO-EB4" firstAttribute="top" secondItem="T1Y-mB-3W6" secondAttribute="bottom" id="UIE-7W-NbU"/>
+                            <constraint firstItem="T1Y-mB-3W6" firstAttribute="top" secondItem="Ef1-Vq-3Sr" secondAttribute="top" id="gUJ-ds-ggY"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="y8V-VL-upL"/>
+                    <navigationItem key="navigationItem" id="y8V-VL-upL">
+                        <barButtonItem key="leftBarButtonItem" title="&lt; Back" id="wV4-Ql-7Iv">
+                            <connections>
+                                <action selector="onBackButton:" destination="xSS-l8-u4A" id="pAq-Yr-tkO"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="mapView" destination="T1Y-mB-3W6" id="ZVx-Dd-ZuQ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pDU-RP-PP6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -331,6 +350,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="mDj-ur-wgH">
+                        <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="xSS-l8-u4A" kind="relationship" relationship="rootViewController" id="Ewv-T4-cbk"/>
                     </connections>
