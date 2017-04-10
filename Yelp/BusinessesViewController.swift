@@ -9,9 +9,6 @@
 import UIKit
 import CoreLocation;
 
-//let locationMgr = CLLocationManager()
-// CLLocationManagerDelegate
-
 class BusinessesViewController: UIViewController, FiltersViewControllerDelegate {
     
     var businesses: [Business]!
@@ -19,14 +16,14 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
     var searchBar: UISearchBar!
     var searchController: UISearchController!
     var isMoreDataLoading = false
+    var searchTerm = ""
+    var currentOffset = 0
+    var loadingMoreView:InfiniteScrollActivityView?
 
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // request location permission
-//        locationMgr.requestWhenInUseAuthorization()
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -43,6 +40,15 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
         // Add SearchBar to the NavigationBar
         searchBar.sizeToFit()
         navigationItem.titleView = searchBar
+        
+        let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingMoreView = InfiniteScrollActivityView(frame: frame)
+        loadingMoreView!.isHidden = true
+        tableView.addSubview(loadingMoreView!)
+        
+        var insets = tableView.contentInset
+        insets.bottom += InfiniteScrollActivityView.defaultHeight
+        tableView.contentInset = insets
     }
     
     override func didReceiveMemoryWarning() {
@@ -78,9 +84,12 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
     
     
     func searchUpdateResults(searchTerm: String?, offset: Int?, limit: Int?) {
-        Business.searchWithTerm(term: searchTerm ?? "Restaurants", offset: offset ?? 0, limit: limit ?? 0 ,completion: { (businesses: [Business]?, error: Error?) -> Void in
+        Business.searchWithTerm(term: searchTerm ?? "Restaurants", offset: offset ?? 0, limit: limit ?? 20 ,completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
+            self.currentOffset += businesses?.count ?? 0
+            self.isMoreDataLoading = false
+            self.loadingMoreView!.stopAnimating()
             self.tableView.reloadData()
             
             print("\n\n \(businesses?.count ?? 0) number of Businesses returned from search")
@@ -105,14 +114,6 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
          }
          */
     }
-    
-//    class func getLocation() -> CLLocationCoordinate2D? {
-//        if CLLocationManager.locationServicesEnabled() {
-//            locationMgr.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-//            return locationMgr.location?.coordinate
-//        }
-//        return nil
-//    }
 }
 
 extension BusinessesViewController: UITableViewDelegate,UITableViewDataSource {
@@ -133,16 +134,29 @@ extension BusinessesViewController: UITableViewDelegate,UITableViewDataSource {
         return cell
     }
     
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        // Calculate the position of one screen length before the bottom of the results
-//        let scrollViewContentHeight = tableView.contentSize.height
-//        let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
-//        
-//        if (!isMoreDataLoading) {
-//            print("UI Scrolled for more data")
-//            isMoreDataLoading = true
-//        }
-//    }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Calculate the position of one screen length before the bottom of the results
+        let scrollViewContentHeight = tableView.contentSize.height
+        let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+        
+        if (!isMoreDataLoading) {
+            print("UI Scrolled for more data")
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging) {
+                
+                isMoreDataLoading = true
+                
+                // Update position of loadingMoreView, and start loading indicator
+                let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+                loadingMoreView?.frame = frame
+                loadingMoreView!.startAnimating()
+                
+                // Code to load more results
+                searchUpdateResults(searchTerm: searchTerm, offset: currentOffset, limit: 20)
+            }
+        }
+    }
 }
 
 extension BusinessesViewController: UISearchBarDelegate {
@@ -163,8 +177,8 @@ extension BusinessesViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let searchTerm = searchBar.text
+        searchTerm = searchBar.text!
         searchBar.resignFirstResponder()
-        searchUpdateResults(searchTerm: searchTerm!, offset: nil, limit: nil)
+        searchUpdateResults(searchTerm: searchTerm, offset: nil, limit: nil)
     }
 }

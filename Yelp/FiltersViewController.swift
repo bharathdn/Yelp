@@ -136,6 +136,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             let filter = filtersEx[section].1
             print(filter[indexPath.row]["name"]!)
             cell.switchLabel?.text = filter[indexPath.row]["name"]! as? String
+            cell.switchLabel.sizeToFit()
             cell.onSwitch.isOn = false
             return cell
             
@@ -162,6 +163,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             }
             
             cell.dropDownLabel?.text = labelText
+            cell.dropDownLabel.sizeToFit()
             return cell
             
             
@@ -189,6 +191,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             }
             
             cell.dropDownLabel?.text = labelText
+            cell.dropDownLabel.sizeToFit()
             return cell
         
         
