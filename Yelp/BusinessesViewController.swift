@@ -79,8 +79,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         Business.searchWithTerm(term: "Restaurants", sort: YelpSortMode(rawValue: sort!), categories: categories, deals: deals) { (businesses: [Business]!, error: Error!) -> Void in
             self.businesses = businesses
-            print("\n\n Businesses from search")
-            print(businesses)
+            print("\n\n \(businesses.count) numeber of Businesses returned from search")
             self.tableView.reloadData()
         }
     }
