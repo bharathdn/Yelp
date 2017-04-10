@@ -16,7 +16,6 @@ class DropDownCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        dropDownLabel.sizeToFit()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
