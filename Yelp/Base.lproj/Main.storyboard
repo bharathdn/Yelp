@@ -201,24 +201,23 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xcU-vB-24H">
-                                                    <rect key="frame" x="13" y="14" width="37" height="16"/>
+                                                    <rect key="frame" x="13" y="14" width="37" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" image="down" translatesAutoresizingMaskIntoConstraints="NO" id="W4x-Kz-QE5">
-                                                    <rect key="frame" x="278" y="6" width="32" height="32"/>
+                                                    <rect key="frame" x="284" y="12.5" width="20" height="20"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="32" id="t0o-2W-rWW"/>
-                                                        <constraint firstAttribute="height" constant="32" id="vur-Er-hA4"/>
+                                                        <constraint firstAttribute="width" constant="20" id="t0o-2W-rWW"/>
+                                                        <constraint firstAttribute="height" constant="20" id="vur-Er-hA4"/>
                                                     </constraints>
                                                 </imageView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="W4x-Kz-QE5" firstAttribute="centerY" secondItem="xcU-vB-24H" secondAttribute="centerY" id="6yp-E4-hGj"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="W4x-Kz-QE5" secondAttribute="trailing" constant="8" id="DrO-8U-aO1"/>
                                                 <constraint firstItem="xcU-vB-24H" firstAttribute="leading" secondItem="d0B-2N-IFn" secondAttribute="leadingMargin" constant="5" id="SJ0-fU-0Qd"/>
-                                                <constraint firstItem="W4x-Kz-QE5" firstAttribute="top" secondItem="d0B-2N-IFn" secondAttribute="top" constant="6" id="T6Q-pk-VYG"/>
-                                                <constraint firstItem="W4x-Kz-QE5" firstAttribute="centerY" secondItem="xcU-vB-24H" secondAttribute="centerY" id="by5-NA-qf3"/>
-                                                <constraint firstAttribute="trailing" secondItem="W4x-Kz-QE5" secondAttribute="trailing" constant="10" id="hJ7-Cn-POt"/>
                                                 <constraint firstItem="xcU-vB-24H" firstAttribute="top" secondItem="d0B-2N-IFn" secondAttribute="topMargin" constant="6" id="l01-ep-aTS"/>
                                             </constraints>
                                         </tableViewCellContentView>
