@@ -70,16 +70,19 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: [AnyObject]]) {
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters searachFilters: [String: [AnyObject]]) {
         
-        let deals = filters["dealsOffered"]?[0] as? Bool
-        let sort = filters["sort"]?[0] as? Int
-        let distance = filters["distance"]?[0] as? Int
-        let categories = filters["categories"] as? [String]
+        let deals = searachFilters["dealsOffered"]?[0] as? Bool
+        let sort = searachFilters["sort"]?[0] as? Int
+        let categories = searachFilters["categories"] as? [String]
         
-        Business.searchWithTerm(term: "Restaurants", sort: YelpSortMode(rawValue: sort!), categories: categories, deals: deals) { (businesses: [Business]!, error: Error!) -> Void in
+        let distance = searachFilters["distance"]?[0] as? Double
+        let meterPerMiles = 1609.34
+        let distanceMeters = meterPerMiles * distance!
+        
+        Business.searchWithTerm(term: "Restaurants", sort: YelpSortMode(rawValue: sort!), categories: categories, deals: deals, distance: distanceMeters) { (businesses: [Business]!, error: Error!) -> Void in
             self.businesses = businesses
-            print("\n\n \(businesses.count) numeber of Businesses returned from search")
+            print("\n\n \(businesses.count) number of Businesses returned from search")
             self.tableView.reloadData()
         }
     }
