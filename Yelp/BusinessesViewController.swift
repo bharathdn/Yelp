@@ -7,6 +7,10 @@
 //
 
 import UIKit
+import CoreLocation;
+
+//let locationMgr = CLLocationManager()
+// CLLocationManagerDelegate
 
 class BusinessesViewController: UIViewController, FiltersViewControllerDelegate {
     
@@ -15,11 +19,14 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
     var searchBar: UISearchBar!
     var searchController: UISearchController!
     var isMoreDataLoading = false
-    
+
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // request location permission
+//        locationMgr.requestWhenInUseAuthorization()
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -27,7 +34,7 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120 
         
-        searchUpdateResults(searchTerm: nil)
+        searchUpdateResults(searchTerm: nil, offset: nil, limit: nil)
         
         // Initialize the UISearchBar
         searchBar = UISearchBar()
@@ -70,11 +77,13 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
     }
     
     
-    func searchUpdateResults(searchTerm: String?) {
-        Business.searchWithTerm(term: searchTerm ?? "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
+    func searchUpdateResults(searchTerm: String?, offset: Int?, limit: Int?) {
+        Business.searchWithTerm(term: searchTerm ?? "Restaurants", offset: offset ?? 0, limit: limit ?? 0 ,completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
             self.tableView.reloadData()
+            
+            print("\n\n \(businesses?.count ?? 0) number of Businesses returned from search")
             
             // dev console
             if let businesses = businesses {
@@ -97,6 +106,13 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
          */
     }
     
+//    class func getLocation() -> CLLocationCoordinate2D? {
+//        if CLLocationManager.locationServicesEnabled() {
+//            locationMgr.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+//            return locationMgr.location?.coordinate
+//        }
+//        return nil
+//    }
 }
 
 extension BusinessesViewController: UITableViewDelegate,UITableViewDataSource {
@@ -117,16 +133,16 @@ extension BusinessesViewController: UITableViewDelegate,UITableViewDataSource {
         return cell
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Calculate the position of one screen length before the bottom of the results
-        let scrollViewContentHeight = tableView.contentSize.height
-        let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
-        
-        if (!isMoreDataLoading) {
-            print("UI Scrolled for more data")
-            isMoreDataLoading = true
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        // Calculate the position of one screen length before the bottom of the results
+//        let scrollViewContentHeight = tableView.contentSize.height
+//        let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+//        
+//        if (!isMoreDataLoading) {
+//            print("UI Scrolled for more data")
+//            isMoreDataLoading = true
+//        }
+//    }
 }
 
 extension BusinessesViewController: UISearchBarDelegate {
@@ -149,6 +165,6 @@ extension BusinessesViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let searchTerm = searchBar.text
         searchBar.resignFirstResponder()
-        searchUpdateResults(searchTerm: searchTerm!)
+        searchUpdateResults(searchTerm: searchTerm!, offset: nil, limit: nil)
     }
 }

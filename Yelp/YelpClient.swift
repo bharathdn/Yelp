@@ -17,9 +17,6 @@ let yelpConsumerSecret = "33QCvh5bIF5jIHR5klQr7RtBDhQ"
 let yelpToken = "uRcRswHFYa1VkDrGV6LAW2F8clGh5JHV"
 let yelpTokenSecret = "mqtKIxMIR4iBtBPZCmCLEb-Dz3Y"
 
-// APP ID: yqJO9sWAaPFmq23U1mSlFg
-// APP Secret: e57HYZV1RxI9JwjaCZ7t60UEJk8qQu3TzxzHKJiSzHJPWv3pnF1fuijWitvJ6sTs
-
 
 enum YelpSortMode: Int {
     case bestMatched = 0, distance, highestRated
@@ -47,13 +44,18 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         self.requestSerializer.saveAccessToken(token)
     }
     
-    func searchWithTerm(_ term: String, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
-        return searchWithTerm(term, sort: nil, categories: nil, deals: nil, distance: nil, offset: nil, limit: nil, completion: completion)
+    func searchWithTerm(_ term: String, offset: Int, limit: Int, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
+        return searchWithTerm(term, sort: nil, categories: nil, deals: nil, distance: nil, offset: offset, limit: limit, completion: completion)
     }
     
     func searchWithTerm(_ term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, distance: Double?, offset: Int?, limit: Int?, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
         // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
         
+        
+//        let location2D = BusinessesViewController.getLocation()
+//        print(location2D?.latitude)
+//        print(location2D?.longitude)
+            
         // Default the location to San Francisco
         var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "37.785771,-122.406165" as AnyObject]
         
@@ -67,6 +69,18 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         
         if deals != nil {
             parameters["deals_filter"] = deals! as AnyObject?
+        }
+        
+        if distance != nil {
+            parameters["radius_filter"] = distance! as AnyObject?
+        }
+        
+        if offset != nil {
+            parameters["offset"] = offset! as AnyObject?
+        }
+        
+        if limit != nil {
+            parameters["limit"] = limit! as AnyObject?
         }
         
         print(parameters)
