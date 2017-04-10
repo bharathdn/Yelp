@@ -24,7 +24,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     // sortby is Best Match by default
     var sortBy = 0
     // distance is 0 by default
-    var distance = 0
+    var distance = 0.00
 
     var isDistanceExpanded = false
     var filteredDistanceIndex = 0
@@ -79,10 +79,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             }
         }
         
-        if selectedCategories.count > 0 {
-           searchfilters["categories"] = selectedCategories as [AnyObject]
-        }
-        
+        searchfilters["categories"] = selectedCategories as [AnyObject]
         searchfilters["dealsOffered"] = ([dealsOffered] as AnyObject) as? [AnyObject]
         searchfilters["distance"] = ([distance] as AnyObject) as? [AnyObject]
         searchfilters["sort"] = ([sortBy] as AnyObject) as? [AnyObject]
@@ -222,7 +219,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             if isDistanceExpanded {
                 isDistanceExpanded = false
                 filteredDistanceIndex = indexPath.row
-                distance = filtersEx[1].1[filteredDistanceIndex]["code"] as! Int
+                distance = filtersEx[1].1[filteredDistanceIndex]["code"] as! Double
             }
             else {
                 isDistanceExpanded = true

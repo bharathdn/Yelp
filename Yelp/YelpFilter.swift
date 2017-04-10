@@ -193,11 +193,11 @@ class YelpFilter {
     
     static func yelpDistances() -> [[String: Any]] {
         return [
-            ["name": "Auto", "code" : 0],
-            ["name": "0.3", "code" : 482],
-            ["name": "1", "code" : 1609],
-            ["name": "5", "code" : 8046],
-            ["name": "25", "code" : 40000]
+            ["name": "Auto", "code" : 0.00],
+            ["name": "0.3", "code" : 482.00],
+            ["name": "1", "code" : 1609.00],
+            ["name": "5", "code" : 8046.00],
+            ["name": "25", "code" : 40000.00]
         ]
     }
 }

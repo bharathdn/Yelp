@@ -8,12 +8,13 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, FiltersViewControllerDelegate {
     
     var businesses: [Business]!
     var filteredBusinesses: [Business]!
     var searchBar: UISearchBar!
     var searchController: UISearchController!
+    var isMoreDataLoading = false
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -24,7 +25,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.dataSource = self
         // Let the rowheight be decided by Auto-Layout
         tableView.rowHeight = UITableViewAutomaticDimension
-        // Ballpark the number so that, scrollview can easily estimate the height and then lazily calculate the actual height
         tableView.estimatedRowHeight = 120 
         
         searchUpdateResults(searchTerm: nil)
@@ -43,22 +43,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         // Dispose of any resources that can be recreated.
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if(businesses != nil) {
-            return businesses.count
-        }
-        else {
-            return 0
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
-        
-        cell.business = businesses[indexPath.row]
-        return cell
-    }
-    
  
     // MARK: - Navigation
      
@@ -70,22 +54,21 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters searachFilters: [String: [AnyObject]]) {
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters searchFilters: [String: [AnyObject]]) {
         
-        let deals = searachFilters["dealsOffered"]?[0] as? Bool
-        let sort = searachFilters["sort"]?[0] as? Int
-        let categories = searachFilters["categories"] as? [String]
+        let deals = searchFilters["dealsOffered"]?[0] as! Bool
+        let sort = searchFilters["sort"]?[0] as! Int
+        let categories = searchFilters["categories"] as! [String]
         
-        let distance = searachFilters["distance"]?[0] as? Double
-        let meterPerMiles = 1609.34
-        let distanceMeters = meterPerMiles * distance!
-        
-        Business.searchWithTerm(term: "Restaurants", sort: YelpSortMode(rawValue: sort!), categories: categories, deals: deals, distance: distanceMeters) { (businesses: [Business]!, error: Error!) -> Void in
+        let distance = searchFilters["distance"]?[0] as! Double
+
+        Business.searchWithTerm(term: "Restaurants", sort: YelpSortMode(rawValue: sort), categories: categories, deals: deals, distance: distance, offset: nil, limit: nil) { (businesses: [Business]!, error: Error!) -> Void in
             self.businesses = businesses
             print("\n\n \(businesses.count) number of Businesses returned from search")
             self.tableView.reloadData()
         }
     }
+    
     
     func searchUpdateResults(searchTerm: String?) {
         Business.searchWithTerm(term: searchTerm ?? "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
@@ -114,6 +97,36 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
          */
     }
     
+}
+
+extension BusinessesViewController: UITableViewDelegate,UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if(businesses != nil) {
+            return businesses.count
+        }
+        else {
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
+        
+        cell.business = businesses[indexPath.row]
+        return cell
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Calculate the position of one screen length before the bottom of the results
+        let scrollViewContentHeight = tableView.contentSize.height
+        let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+        
+        if (!isMoreDataLoading) {
+            print("UI Scrolled for more data")
+            isMoreDataLoading = true
+        }
+    }
 }
 
 extension BusinessesViewController: UISearchBarDelegate {
